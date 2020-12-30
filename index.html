@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Countdown Timer</title>
+  <style>
+    .timer_div {
+      text-align: center;
+      width: 300px;
+      margin: 0 auto;
+      transform: translateY(30vh);
+    }
+    .timer {
+      font-size: 3rem;
+      margin: 30px auto;
+    }
+    .timer_buttons {
+      margin-bottom: 25px;
+    }
+  </style>
+</head>
+<body>
+  <div class="timer_div">
+    <p class="timer">5:00</p>
+    <div class="timer_buttons">
+      <button onClick="startTimer()">Start</button>
+      <button onClick="resumeTimer()">Resume</button>
+      <button onClick="stopTimer()">Stop</button><br>
+    </div>
+    <label for="timer_inital_val">Initial Value:</label>
+    <input id="timer_inital_val" name="timer_initial_val" value="5:00">
+  </div>
+  <script>
+    let alarm = new Audio('assets/countdown_alarm.mp3');
+    alarm.loop = true;
+    let timerHandle = null;
+    let timerValue, timerMin, timerSec;
+
+    function updateTimer() {
+      timerValue -= 1000;
+      let newTime = new Date(timerValue);
+      timerMin = newTime.getMinutes();
+      timerSec = newTime.getSeconds();
+      console.log(`min=${timerMin} sec=${timerSec} value=${timerValue}`);
+      if (timerMin===0 && timerSec===0) {
+        // stop timer
+        clearInterval(timerHandle);
+        // play alarm
+        alarm.currentTime = 0;
+        alarm.play();
+      }      
+    }
+
+    function displayTimer() {
+      document.querySelector('.timer').innerHTML = `${timerMin}:${timerSec<10 ? '0' : ''}${timerSec}`;
+    }
+
+    function startTimer() {
+      let [min, sec] = document.getElementById("timer_inital_val").value.split(':');
+      if (min==="" || min===undefined) { min = 5; }
+      if (sec === undefined) { sec = 0; }
+      timerValue = new Date().setMinutes(min, sec);
+      console.log(`min=${min} sec=${sec} value=${timerValue}`);
+      // start timer
+      timerHandle = setInterval(()=> {
+        updateTimer();
+        displayTimer();
+      }, 1000);
+    }
+
+    function stopTimer() {
+      // stop timer (if not already stopped)
+      clearInterval(timerHandle);
+      timerHandle = null;
+      // stop alarm
+      alarm.pause();
+    }
+
+    function resumeTimer() {
+      // stop timer if running
+      stopTimer();
+      // check that timer still has time
+      if (timerMin===0 && timerSec===0) {
+        alert("Countdown already complete!")
+      } else if (timerHandle==null) {
+        timerHandle = setInterval(()=> {
+          updateTimer();
+          displayTimer();
+        }, 1000);  
+      }
+    }
+  </script>
+</body>
+</html>
