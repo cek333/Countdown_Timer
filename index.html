@@ -14,6 +14,7 @@
     .timer {
       font-size: 3rem;
       margin: 30px auto;
+      cursor: pointer;
     }
     .timer_icons {
       width: 50px;
@@ -29,7 +30,7 @@
       margin: 30px auto;
       cursor: pointer;
     }
-    .start_stop_ctrl_text {
+    .start_stop_ctrl p {
       transform: translateY(1rem);
     }
   </style>
@@ -37,10 +38,10 @@
 <body>
   <div class="timer_div">
     <img class="timer_icons" src="assets/up_arrow.svg" alt="increase timer initial value">
-    <p class="timer">5:00</p>
+    <p class="timer" onClick="pauseResumeTimer()">5:00</p>
     <img class="timer_icons" src="assets/down_arrow.svg" alt="decrease timer initial value">
     <div class="start_stop_ctrl" onClick="startStopTimer()">
-      <p class="start_stop_ctrl_text">Start</p>
+      <p>Start</p>
     </div>
     <div class="timer_buttons">
       <button onClick="startTimer()">Start</button>
@@ -54,7 +55,12 @@
     let alarm = new Audio('assets/countdown_alarm.mp3');
     alarm.loop = true;
     let timerHandle = null;
-    let timerValue, timerMin, timerSec;
+    let timerValue = new Date().setMinutes(5, 0);
+    let timerMin = 5;
+    let timerSec = 0;
+    let startStopTextElem = document.querySelector('.start_stop_ctrl p');
+    let startStopText = "Start";
+    let timerComplete = false;
 
     function updateTimer() {
       timerValue -= 1000;
@@ -68,11 +74,45 @@
         // play alarm
         alarm.currentTime = 0;
         alarm.play();
+
+        timerComplete = true;
       }      
     }
 
     function displayTimer() {
       document.querySelector('.timer').innerHTML = `${timerMin}:${timerSec<10 ? '0' : ''}${timerSec}`;
+    }
+
+    function startStopTimer() {
+      switch(startStopText) {
+        case "Start":
+          startTimer();
+          break;
+        case "Resume":
+          resumeTimer();
+          break;
+        default:
+          stopTimer();
+          break;
+      }
+      // Show next possible action
+      startStopText = startStopText==="Stop" ? "Start" : "Stop";
+      startStopTextElem.innerHTML = startStopText;
+    }
+
+    function pauseResumeTimer() {
+      if (timerComplete) return;
+      switch(startStopText) {
+        case "Stop":
+          stopTimer();
+          break;
+        default:
+          resumeTimer();
+          break;
+      }
+      // Show next possible action
+      startStopText = startStopText==="Stop" ? "Resume" : "Stop";
+      startStopTextElem.innerHTML = startStopText;
     }
 
     function startTimer() {
@@ -86,6 +126,8 @@
         updateTimer();
         displayTimer();
       }, 1000);
+
+      timerComplete = false;
     }
 
     function stopTimer() {
@@ -100,7 +142,7 @@
       // stop timer if running
       stopTimer();
       // check that timer still has time
-      if (timerMin===0 && timerSec===0) {
+      if (timerComplete) {
         alert("Countdown already complete!")
       } else if (timerHandle==null) {
         timerHandle = setInterval(()=> {
