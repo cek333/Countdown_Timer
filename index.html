@@ -9,20 +9,39 @@
       text-align: center;
       width: 300px;
       margin: 0 auto;
-      transform: translateY(30vh);
+      transform: translateY(20vh);
     }
     .timer {
       font-size: 3rem;
       margin: 30px auto;
     }
+    .timer_icons {
+      width: 50px;
+    }
     .timer_buttons {
       margin-bottom: 25px;
+    }
+    .start_stop_ctrl {
+      border-radius: 5rem;
+      border: 0.1rem solid;
+      width: 5rem;
+      height: 5rem;
+      margin: 30px auto;
+      cursor: pointer;
+    }
+    .start_stop_ctrl_text {
+      transform: translateY(1rem);
     }
   </style>
 </head>
 <body>
   <div class="timer_div">
+    <img class="timer_icons" src="assets/up_arrow.svg" alt="increase timer initial value">
     <p class="timer">5:00</p>
+    <img class="timer_icons" src="assets/down_arrow.svg" alt="decrease timer initial value">
+    <div class="start_stop_ctrl" onClick="startStopTimer()">
+      <p class="start_stop_ctrl_text">Start</p>
+    </div>
     <div class="timer_buttons">
       <button onClick="startTimer()">Start</button>
       <button onClick="resumeTimer()">Resume</button>
