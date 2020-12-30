@@ -42,10 +42,10 @@
       let newTime = new Date(timerValue);
       timerMin = newTime.getMinutes();
       timerSec = newTime.getSeconds();
-      console.log(`min=${timerMin} sec=${timerSec} value=${timerValue}`);
+      // console.log(`min=${timerMin} sec=${timerSec} value=${timerValue}`);
       if (timerMin===0 && timerSec===0) {
         // stop timer
-        clearInterval(timerHandle);
+        stopTimer();
         // play alarm
         alarm.currentTime = 0;
         alarm.play();
@@ -61,7 +61,7 @@
       if (min==="" || min===undefined) { min = 5; }
       if (sec === undefined) { sec = 0; }
       timerValue = new Date().setMinutes(min, sec);
-      console.log(`min=${min} sec=${sec} value=${timerValue}`);
+      // console.log(`min=${min} sec=${sec} value=${timerValue}`);
       // start timer
       timerHandle = setInterval(()=> {
         updateTimer();
